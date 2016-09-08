@@ -1,7 +1,5 @@
 <?php
 namespace SmartyStreets;
-use \SmartyStreets\SmartyException as SmartyException;
-
 
 class Batch
 {
@@ -18,12 +16,9 @@ class Batch
     }
 
     public function add(Lookup $newAddress) {
-        try {
-            if ($this->isFull())
-                throw new \Exception('Batch size cannot exceed ' . $this::MAX_BATCH_SIZE);
-        } catch (\Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
-        }
+        if ($this->isFull())
+            throw new \Exception('Batch size cannot exceed ' . $this::MAX_BATCH_SIZE);
+
         $this->allLookups[] = $newAddress;
 
         $key = $newAddress->getInputId();
@@ -92,7 +87,7 @@ class Batch
     }
 
     public function setIncludeInvalid($newValue) {
-        $this->includeValid = $newValue;
+        $this->includeInvalid = $newValue;
     }
 
 }

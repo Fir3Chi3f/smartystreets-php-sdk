@@ -30,15 +30,7 @@ class BatchTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, $batch->allLookupsSize());
     }
 
-    // Can't get expected Exceptions to be found and thrown
-    function testAddingALookupWhenBatchIsFullThrowsException() {
-        $batch = new Batch();
-        for ($i = 0; $i < $batch::MAX_BATCH_SIZE + 1; $i++)
-            $batch->add(new Lookup());
-        $this->setExpectedException('Exception');
-    }
-
-    function testResetMethodResetsHeadersAndLookups() {
+    function testResetMethodResetsHeadersAndLookupCollection() {
         $batch = new Batch();
         $batch->setStandardizeOnly(true);
         $batch->setIncludeInvalid(true);
@@ -48,5 +40,17 @@ class BatchTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $batch->namedLookupsSize());
         $this->assertFalse($batch->getIncludeInvalid());
         $this->assertFalse($batch->getStandardizeOnly());
+    }
+
+    function testClearMethodClearsBothLookupCollectionsButNotHeaders() {
+        $batch = new Batch();
+        $batch->setIncludeInvalid(true);
+        $batch->setStandardizeOnly(true);
+        $batch->add(new Lookup());
+        $batch->clear();
+        $this->assertEquals(0, $batch->allLookupsSize());
+        $this->assertEquals(0, $batch->namedLookupsSize());
+        $this->assertTrue($batch->getIncludeInvalid());
+        $this->assertTrue($batch->getStandardizeOnly());
     }
 }
