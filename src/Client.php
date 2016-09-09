@@ -33,8 +33,9 @@ class Client
         else {
             $request->setPayload(serialize($batch->getAllLookups()));
         }
-        $response = $this->sender->send($request); //TODO: Figure out problem with send method. No references yet from Sender Interface.
-        $candidates = unserialize(serialize($response->getPayload())); //Unsure if this works. Build test. TODO: create Response class.
+
+        $response = $this->sender->send($request); // TODO: Create sender instances.
+        $candidates = unserialize(serialize($response->getPayload())); //TODO: create Response class.
         if ($candidates == null)
             $candidates = new Candidate[0];
         $this->assignCandidatesToLookups($batch, $candidates);
