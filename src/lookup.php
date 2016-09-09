@@ -129,7 +129,7 @@ class Lookup
         $this->urbanization = $urbanization;
     }
 
-    public function setMaxCandidates(int $maxCandidates) {
+    public function setMaxCandidates($maxCandidates) {
         $this->maxCandidates = $maxCandidates;
     }
 

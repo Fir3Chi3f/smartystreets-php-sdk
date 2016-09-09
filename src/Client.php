@@ -2,6 +2,8 @@
 
 namespace SmartyStreets;
 
+require_once(dirname(dirname(__FILE__)) . '/src/Request.php');
+require_once(dirname(dirname(__FILE__)) . '/src/Candidate.php');
 
 class Client
 {
@@ -10,7 +12,7 @@ class Client
             $sender,
             $serializer;
 
-    public function __construct($urlPrefix = null, Sender $sender = null, $serializer = null) {
+    public function __construct($urlPrefix = null, Sender $sender = null, Serializer $serializer = null) {
         $this->urlPrefix = $urlPrefix;
         $this->sender = $sender;
         $this->serializer = $serializer;
@@ -26,19 +28,28 @@ class Client
         $request = new Request($this->urlPrefix);
 
         if ($batch->allLookupsSize() == 0)
-            $request->putHeader($batch, $request);
+            return;
+
+        $this->putHeaders($batch, $request);
 
         if ($batch->allLookupsSize() == 1)
-            $this->populateQueryString($batch[0], $request);
+            $this->populateQueryString($batch->getByIndex(0), $request);
         else {
-            $request->setPayload(serialize($batch->getAllLookups()));
+            $request->setPayload($this->serializer->serialize($batch->getAllLookups()));
         }
 
-        $response = $this->sender->send($request); // TODO: Create sender instances.
-        $candidates = unserialize(serialize($response->getPayload())); //TODO: create Response class.
+        $response = $this->sender->send($request); // TODO: Create more sender instances.
+        $candidates = $this->serializer->serialize($response->getPayload()); //TODO: create Response class.
         if ($candidates == null)
-            $candidates = new Candidate[0];
+            $candidates[] = new Candidate();
         $this->assignCandidatesToLookups($batch, $candidates);
+    }
+
+    public function putHeaders(Batch $batch, Request $request) {
+        if($batch->getIncludeInvalid())
+            $request->putHeader("X-Include-Invalid", "true");
+        if($batch->getStandardizeOnly())
+            $request->putHeader("X-Standardize-Only", "true");
     }
 
     private function populateQueryString(Lookup $address, Request $request) {
@@ -56,9 +67,9 @@ class Client
             $request->putParameter("candidates", strval($address->getMaxCandidates()));
     }
 
-    private function assignCandidatesToLookups(Batch $batch, Candidate $candidates) {
+    private function assignCandidatesToLookups(Batch $batch, $candidates) {
         foreach ($candidates as $candidate) {
-            $batch[$candidate->getInputIndex()]->addToResults($candidate); //TODO: Create a better iterator.
+            $batch[$candidate->getInputIndex()]->addToResults($candidate); //TODO: Create a better iterator. Figure it out.
         }
     }
 }

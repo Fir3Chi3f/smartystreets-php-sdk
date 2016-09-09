@@ -8,7 +8,7 @@ class Batch
     private $allLookups = [];
     private $standardizeOnly, $includeInvalid;
 
-    public function batch() {
+    public function __construct() {
         $this->standardizeOnly = false;
         $this->includeInvalid = false;
         $this->namedLookups = [];

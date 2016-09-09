@@ -16,7 +16,7 @@ class SigningSender implements Sender
     }
 
     public function send(Request $request) {
-        $this->signer->sign($request);
-        return $this->inner->send($request);
+        $this->signer->sign($request); //TODO: fix sign()
+        return $this->inner->send($request); // TODO: fix send()
     }
 }

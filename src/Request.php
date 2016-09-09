@@ -19,14 +19,14 @@ class Request
     }
 
     public function putHeader($name, $value) {
-        $this->headers[] = [$name => $value];
+        $this->headers[$name] = $value;
     }
 
     public function putParameter($name, $value) {
         if ($name == null || $value == null || strlen($name) == 0)
             return;
 
-        $this->parameters[] = [$name => $value];
+        $this->parameters[$name] = $value;
     }
 
     public function urlEncode($value) {
@@ -43,15 +43,16 @@ class Request
         if (!strpos($url, "?"))
             $url .= "?";
 
-        foreach ($this->parameters as $value) {
-            if ($this->endsWith($url, "?")) {
+        foreach ($this->parameters as $key => $value) {
+            if (!$this->endsWith($url, "?")) {
                 $url .= "&";
             }
 
-            $encodedName = urlencode($value);
-            $encodedValue = urlencode($this->parameters[$value]);
+            $encodedName = $this->urlEncode($key);
+            $encodedValue = $this->urlEncode($value);
             $url .= $encodedName . "=" . $encodedValue;
         }
+        return $url;
 
     }
 
@@ -71,7 +72,6 @@ class Request
     // Helpers
 
     function endsWith($stringToCheck, $character) {
-        // search forward starting from end minus needle length characters
         return $character === "" || (($temp = strlen($stringToCheck) - strlen($character)) >= 0 && strpos($stringToCheck, $character, $temp) !== false);
     }
 

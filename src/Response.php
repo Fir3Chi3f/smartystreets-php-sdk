@@ -8,6 +8,11 @@ class Response
     private $statusCode,
             $payload;
 
+    public function __construct ($statusCode, array $payload) {
+        $this->statusCode = $statusCode;
+        $this->payload = $payload;
+    }
+
     // Getters
 
     public function getStatusCode() {
