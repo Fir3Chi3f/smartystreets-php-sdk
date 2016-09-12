@@ -28,7 +28,7 @@ class Lookup
         $this->street = $freeformAddress;
     }
 
-    public function addCandidateToResult(Candidate $newCandidate) {
+    public function addCandidateToResult($newCandidate) {
         $this->result[] = $newCandidate;
     }
 

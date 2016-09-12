@@ -62,6 +62,10 @@ class Request
         return $this->payload;
     }
 
+    public function getHeaders() {
+        return $this->headers;
+    }
+
     // Setters
 
     public function setPayload($payload) {

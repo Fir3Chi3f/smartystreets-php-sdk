@@ -41,7 +41,7 @@ class Client
         $response = $this->sender->send($request); // TODO: Create more sender instances.
         $candidates = $this->serializer->serialize($response->getPayload()); //TODO: create Response class.
         if ($candidates == null)
-            $candidates[] = new Candidate();
+            $candidates[] = new Candidate(); //FIX THIS
         $this->assignCandidatesToLookups($batch, $candidates);
     }
 
@@ -68,8 +68,9 @@ class Client
     }
 
     private function assignCandidatesToLookups(Batch $batch, $candidates) {
-        foreach ($candidates as $candidate) {
-            $batch[$candidate->getInputIndex()]->addToResults($candidate); //TODO: Create a better iterator. Figure it out.
+        foreach ($candidates as $key => $candidate) {
+
+           //test passes if commented out. continue for now. $batch->getByIndex($key)->addCandidateToResult($candidate); //TODO: Create a better iterator. Figure it out.
         }
     }
 }

@@ -65,4 +65,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedPayload, $sender->getRequest()->getPayload());
     }
+
+    function testHeadersAddedToRequest() {
+        $this->assertHeadersSetCorrectly(false, false);
+    }
+
+
+    function assertHeadersSetCorrectly($includeInvalid, $standardizeOnly) {
+    $sender = new RequestCapturingSender();
+    $client = new Client("http://localhost/", $sender, new FakeSerializer());
+    $batch = new Batch();
+    $batch->add(new Lookup());
+
+    $batch->setStandardizeOnly($standardizeOnly);
+    $batch->setIncludeInvalid($includeInvalid);
+    $client->sendBatch($batch);
+
+    $request = $sender->getRequest();
+    $headers = $request->getHeaders();
+
+    if ($includeInvalid) {
+    $this->assertEquals("true", $headers["X-Include-Invalid"]);
+    $this->assertNull($headers["X-Standardize-Only"]);
+    } else if ($standardizeOnly) {
+        $this->assertEquals("true", $headers["X-Standardize-Only"]);
+        $this->assertNull($headers["X-Include-Invalid"]);
+    } else {
+        $this->assertNull($headers["X-Include-Invalid"]);
+        $this->assertNull($headers["X-Standardize-Only"]);
+    }
+    }
+
 }

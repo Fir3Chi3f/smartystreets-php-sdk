@@ -5,7 +5,7 @@ class Batch
 {
     const MAX_BATCH_SIZE = 100;
     private $namedLookups = [];
-    private $allLookups = [];
+    public $allLookups = [];
     private $standardizeOnly, $includeInvalid;
 
     public function __construct() {
@@ -25,8 +25,7 @@ class Batch
         if (!$key)
             return;
 
-        $this->namedLookups = [$key => $newAddress];
-
+        $this->namedLookups[$key] = $newAddress;
     }
 
     public function resetAll() {
@@ -39,6 +38,8 @@ class Batch
         $this->namedLookups = [];
         $this->allLookups = [];
     }
+
+
 
     // Helpers
 
